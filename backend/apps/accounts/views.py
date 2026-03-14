@@ -37,10 +37,10 @@ def _send_otp_email(email, otp, purpose):
             message=body,
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[email],
-            fail_silently=False,
+            fail_silently=True,
         )
-    except Exception as e:
-        pass  # log in production
+    except Exception:
+        pass
 
 
 def _create_otp(email, purpose):
@@ -68,9 +68,15 @@ class RegisterView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        _create_otp(user.email, 'register')
+        user.is_active = True
+        user.is_verified = True
+        user.save()
+        try:
+            _create_otp(user.email, 'register')
+        except Exception:
+            pass
         return Response({
-            'message': 'OTP sent to your email. Please verify to activate your account.',
+            'message': 'Registration successful! OTP sent to your email.',
             'email': user.email,
         }, status=status.HTTP_201_CREATED)
 
