@@ -1,1 +1,1 @@
-web: python manage.py collectstatic --noinput && python manage.py migrate --noinput && python manage.py shell -c "from apps.accounts.models import User; User.objects.filter(email='bhavsaryug06@gmail.com').exists() or User.objects.create_superuser(email='bhavsaryug06@gmail.com', name='Admin', password='Admin@123', is_verified=True)" && gunicorn smarttask_project.wsgi --bind 0.0.0.0:$PORT
+web: python manage.py collectstatic --noinput && python manage.py migrate --noinput && gunicorn smarttask_project.wsgi --bind 0.0.0.0:$PORT --timeout 120 --workers 2
