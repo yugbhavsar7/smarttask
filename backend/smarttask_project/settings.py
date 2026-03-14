@@ -1,3 +1,5 @@
+import pymysql
+pymysql.install_as_MySQLdb()
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
