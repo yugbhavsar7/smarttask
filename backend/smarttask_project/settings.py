@@ -1,5 +1,8 @@
-import pymysql
-pymysql.install_as_MySQLdb()
+try:
+    import pymysql
+    pymysql.install_as_MySQLdb()
+except ImportError:
+    pass
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
