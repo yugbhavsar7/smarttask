@@ -13,11 +13,11 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
 
   // OTP step
-  const [step, setStep]     = useState('register') // register | otp
-  const [otp, setOtp]       = useState('')
+  const [step, setStep] = useState('register') // register | otp
+  const [otp, setOtp] = useState('')
   const [verifying, setVerifying] = useState(false)
   const [resending, setResending] = useState(false)
-  const [regEmail, setRegEmail]   = useState('')
+  const [regEmail, setRegEmail] = useState('')
 
   const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }))
 
@@ -30,9 +30,17 @@ export default function RegisterPage() {
     setLoading(true)
     try {
       const { data } = await api.post('/auth/register/', form)
-      setRegEmail(data.email || form.email)
-      toast.success('OTP sent to your email!')
-      setStep('otp')
+      // Auto login
+      const loginRes = await api.post('/auth/login/', {
+        email: form.email,
+        password: form.password
+      })
+      toast.success('Welcome to SmartTask!')
+      const role = loginRes.data.user?.role
+      if (role === 'employee') navigate('/employee')
+      else if (role === 'company') navigate('/company')
+      else if (role === 'admin') navigate('/admin')
+      else navigate('/login')
     } catch (err) {
       const errors = err.response?.data
       if (errors && typeof errors === 'object') {
