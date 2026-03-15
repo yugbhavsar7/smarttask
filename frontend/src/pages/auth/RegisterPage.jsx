@@ -30,17 +30,8 @@ export default function RegisterPage() {
     setLoading(true)
     try {
       const { data } = await api.post('/auth/register/', form)
-      // Auto login
-      const loginRes = await api.post('/auth/login/', {
-        email: form.email,
-        password: form.password
-      })
-      toast.success('Welcome to SmartTask!')
-      const role = loginRes.data.user?.role
-      if (role === 'employee') navigate('/employee')
-      else if (role === 'company') navigate('/company')
-      else if (role === 'admin') navigate('/admin')
-      else navigate('/login')
+      toast.success('Registration successful! Please sign in.')
+      navigate('/login')
     } catch (err) {
       const errors = err.response?.data
       if (errors && typeof errors === 'object') {
